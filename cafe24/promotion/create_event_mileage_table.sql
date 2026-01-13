@@ -1,0 +1,30 @@
+-- 쇼핑지원금(이벤트 마일리지) 지급/차감 내역 테이블
+CREATE TABLE IF NOT EXISTS `wg_eventMileage` (
+  `sno` int(11) NOT NULL AUTO_INCREMENT COMMENT '고유번호',
+  `memId` varchar(50) NOT NULL COMMENT '회원ID (wg_member.memId)',
+  `campaignSno` int(11) DEFAULT NULL COMMENT '캠페인 번호 (wg_eventMileageCampaign.sno)',
+  `eventMileage` int(11) NOT NULL DEFAULT '0' COMMENT '지급/차감 금액',
+  `beforeEventMileage` int(11) DEFAULT '0' COMMENT '지급/차감 전 금액',
+  `afterEventMileage` int(11) DEFAULT '0' COMMENT '지급/차감 후 금액',
+  `mode` varchar(10) NOT NULL COMMENT '구분 (add: 지급, remove: 차감)',
+  `expiryFl` varchar(1) NOT NULL DEFAULT 'y' COMMENT '유효기간 사용 여부',
+  `expiryStartDate` date DEFAULT NULL COMMENT '유효기간 시작일',
+  `expiryDate` date DEFAULT NULL COMMENT '유효기간 종료일',
+  `mileageLimit` decimal(5,2) DEFAULT '0.00' COMMENT '혜택사용율 (%)',
+  `state` varchar(20) DEFAULT 'n' COMMENT '상태 (n: 사용가능, d: 삭제, complete: 완료)',
+  `memberUpdateFl` varchar(1) NOT NULL DEFAULT 'n' COMMENT '회원 테이블 업데이트 여부',
+  `reasonCd` varchar(20) DEFAULT NULL COMMENT '사유 코드',
+  `contents` varchar(255) DEFAULT NULL COMMENT '사유 내용 (캠페인명 등)',
+  `history` text DEFAULT NULL COMMENT '차감 내역 (JSON)',
+  `parentSno` int(11) DEFAULT NULL COMMENT '부모 내역 번호',
+  `regDt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시',
+  `modDt` datetime DEFAULT NULL COMMENT '수정일시',
+  PRIMARY KEY (`sno`),
+  KEY `idx_memId` (`memId`),
+  KEY `idx_campaignSno` (`campaignSno`),
+  KEY `idx_mode` (`mode`),
+  KEY `idx_state` (`state`),
+  KEY `idx_expiryDate` (`expiryDate`),
+  KEY `idx_regDt` (`regDt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='쇼핑지원금 지급/차감 내역';
+

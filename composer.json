@@ -1,0 +1,15 @@
+{
+    "name": "donggook-health-mall/admin",
+    "description": "동국제약 건강몰 관리자 시스템",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "phpoffice/phpspreadsheet": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "libraries/"
+        }
+    }
+}
+

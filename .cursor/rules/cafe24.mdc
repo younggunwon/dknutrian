@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+---
+
+api 관련 파일은 /api 폴더에 작성
+view 관련 파일은 /cafe24 폴더에 작성
+controller는 별도로 없고 view 파일 상단에 작성
+model은 libraries 폴더에 작성
+libraries/Goods/Goods.php 모델은 use Goods/Goods 로 사용가능
+
+DB는 use Database\DB; $db = new DB(); 로 사용가능
+모델은 생성자에서 $this->db = new DB(); 로 DB를 가지고 있어야 함
+$this->db->query($sql, $bind) 와 $this->db->query_fetch($sql, $bind) 을 사용할 수 있음
+
+디버그를 찍을때는 gd_debug() 함수를 사용하도록 해
+
+view를 작성할때는 상단에 아래 내용을 포함하도록해
+
+<?php
+header("Access-Control-Allow-Origin: *");
+
+include("../../helpers/common_helper.php");
+include("../../helpers/function_helper.php");
+
+?>
+
+<?php require_once './../header.php'; ?>

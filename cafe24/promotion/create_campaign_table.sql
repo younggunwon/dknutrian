@@ -1,0 +1,31 @@
+-- 쇼핑지원금 캠페인 테이블 생성
+CREATE TABLE IF NOT EXISTS `wg_eventMileageCampaign` (
+  `sno` int(11) NOT NULL AUTO_INCREMENT,
+  `campaignNm` varchar(200) NOT NULL COMMENT '캠페인명',
+  `campaignDes` text COMMENT '캠페인 설명',
+  `campaignCode` varchar(50) NOT NULL COMMENT '캠페인 코드',
+  `eventMileage` int(11) NOT NULL DEFAULT '0' COMMENT '혜택금액',
+  `mileageLimit` decimal(5,2) NOT NULL DEFAULT '0.00' COMMENT '혜택사용율 (%)',
+  `expiryDaysFl` varchar(20) DEFAULT NULL COMMENT '유효기간 구분 (y: 기간선택, dayDate: 발급일로부터, monthEnd: 발급월말, yearEnd: 발급년도말)',
+  `expiryStartDate` date DEFAULT NULL COMMENT '유효기간 시작일',
+  `expiryDate` date DEFAULT NULL COMMENT '유효기간 종료일',
+  `expiryDays` int(11) DEFAULT NULL COMMENT '발급일로부터 일수',
+  `payStartDate` date NOT NULL COMMENT '지급기간 시작일',
+  `payEndDate` date NOT NULL COMMENT '지급기간 종료일',
+  `paymentFl` varchar(20) NOT NULL COMMENT '지급방식 (passivity: 수동발급, excelUpload: 엑셀업로드, auto: 자동발급, down: 회원이 직접발급, code: 회원이 직접발급(난수번호))',
+  `addSmsTypeFl` varchar(20) DEFAULT 'n' COMMENT '지급안내 발송 방식 (sms, kakao, n)',
+  `expirySmsTypeFl` varchar(20) DEFAULT 'n' COMMENT '소멸예정안내 발송 방식 (sms, kakao, n)',
+  `memberAlwaysExceptFl` varchar(1) DEFAULT 'n' COMMENT '중복지급제한 (y: 재지급하지 않음, n: 재지급함)',
+  `memberAlwaysExceptLimitType` varchar(1) DEFAULT 'n' COMMENT '최대 제한 여부 (y, n)',
+  `memberAlwaysExceptLimit` int(11) DEFAULT NULL COMMENT '최대 제한 횟수',
+  `input_reserve_time` int(11) DEFAULT NULL COMMENT '지급안내 발송시간',
+  `remove_reserve_day` int(11) DEFAULT NULL COMMENT '소멸안내 일전',
+  `remove_reserve_time` int(11) DEFAULT NULL COMMENT '소멸안내 발송시간',
+  `regDt` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시',
+  `modDt` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
+  PRIMARY KEY (`sno`),
+  UNIQUE KEY `uk_campaign_code` (`campaignCode`),
+  KEY `idx_reg_dt` (`regDt`),
+  KEY `idx_pay_date` (`payStartDate`, `payEndDate`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='쇼핑지원금 캠페인';
+
