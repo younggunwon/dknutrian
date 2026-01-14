@@ -300,20 +300,24 @@ class Member
 				$arrWhere[] = "(m.joinDt <= '{$entryDtEnd}' OR (m.joinDt IS NULL AND m.regDt <= '{$entryDtEnd}'))";
 			}
 		}
-
+		
 		// 주문일 조건 추가
-		if(!empty($_GET['orderDt']) && is_array($_GET['orderDt'])) {
+		if((!empty($_GET['orderDt'][0]) || !empty($_GET['orderDt'][1])) && is_array($_GET['orderDt'])) {
 			if(!empty($_GET['orderDt'][0]) && !empty($_GET['orderDt'][1])) {
 				$orderDtStart = $_GET['orderDt'][0] . ' 00:00:00';
 				$orderDtEnd = $_GET['orderDt'][1] . ' 23:59:59';
-				$arrWhere[] = "(m.joinDt BETWEEN '{$orderDtStart}' AND '{$orderDtEnd}' OR (m.joinDt IS NULL AND m.regDt BETWEEN '{$orderDtStart}' AND '{$orderDtEnd}'))";
+				$strWhere = "(order_date BETWEEN '{$orderDtStart}' AND '{$orderDtEnd}')";
 			} else if(!empty($_GET['orderDt'][0])) {
 				$orderDtStart = $_GET['orderDt'][0] . ' 00:00:00';
-				$arrWhere[] = "(m.joinDt >= '{$orderDtStart}' OR (m.joinDt IS NULL AND m.regDt >= '{$orderDtStart}'))";
+				$strWhere = "(order_date >= '{$orderDtStart}')";
 			} else if(!empty($_GET['orderDt'][1])) {
 				$orderDtEnd = $_GET['orderDt'][1] . ' 23:59:59';
-				$arrWhere[] = "(m.joinDt <= '{$orderDtEnd}' OR (m.joinDt IS NULL AND m.regDt <= '{$orderDtEnd}'))";
+				$strWhere = "(order_date <= '{$orderDtEnd}')";
 			}
+			$sql = "SELECT member_id FROM wg_order WHERE {$strWhere} ";
+			$memberList = $this->db->query_fetch($sql);
+			$memberList = array_column($memberList, 'member_id');
+			$arrWhere[] = "m.memId IN('".implode("','", $memberList)."')";
 		}
 
 		// 회원등급(groupNo) 조건 추가
@@ -329,7 +333,6 @@ class Member
 				$arrWhere[] = "m.groupNo = {$groupNo}";
 			}
 		}
-
 		//$arrWhere[] = 'm.hackoutFl = \'n\'';
 
 		if(count($arrWhere) == 0) {
@@ -347,7 +350,6 @@ class Member
 		} else {
 			$sort = 'm.regDt DESC';
 		}
-		
 		
 		$sql = '	
 				SELECT 

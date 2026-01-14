@@ -828,7 +828,7 @@ class EventMileage
 		if(empty($campaignDataList)) {
 			return;
 		}
-
+		
 		//검색설정한대로 회원 가져오기 (searchQuery가 없으면 전체 회원)
 		$member = new \Member\Member();
 		foreach($campaignDataList as $campaign) {
@@ -886,13 +886,19 @@ class EventMileage
 				if(!empty($params['orderDt'][0]) && !empty($params['orderDt'][1])) {
 					$orderDtStart = $this->escape($params['orderDt'][0]) . ' 00:00:00';
 					$orderDtEnd = $this->escape($params['orderDt'][1]) . ' 23:59:59';
-					$arrWhere[] = "(joinDt BETWEEN '{$orderDtStart}' AND '{$orderDtEnd}' OR (joinDt IS NULL AND regDt BETWEEN '{$orderDtStart}' AND '{$orderDtEnd}'))";
+					$strWhere = "(order_date BETWEEN '{$orderDtStart}' AND '{$orderDtEnd}')";
 				} else if(!empty($params['orderDt'][0])) {
 					$orderDtStart = $this->escape($params['orderDt'][0]) . ' 00:00:00';
-					$arrWhere[] = "(joinDt >= '{$orderDtStart}' OR (joinDt IS NULL AND regDt >= '{$orderDtStart}'))";
+					$strWhere = "(order_date >= '{$orderDtStart}')";
 				} else if(!empty($params['orderDt'][1])) {
 					$orderDtEnd = $this->escape($params['orderDt'][1]) . ' 23:59:59';
-					$arrWhere[] = "(joinDt <= '{$orderDtEnd}' OR (joinDt IS NULL AND regDt <= '{$orderDtEnd}'))";
+					$strWhere = "(order_date <= '{$orderDtEnd}')";
+				}
+				if($strWhere) {
+					$sql = "SELECT member_id FROM wg_order WHERE {$strWhere} ";
+					$memberList = $this->db->query_fetch($sql);
+					$memberList = array_column($memberList, 'member_id');
+					$arrWhere[] = "memId IN('".implode("','", $memberList)."')";
 				}
 			}
 			

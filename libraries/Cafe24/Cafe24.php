@@ -18,7 +18,7 @@ class Cafe24
 		// https://{mall_id}.cafe24api.com/api/v2/oauth/authorize?response_type=code&client_id={client_id}&state={encode_csrf_token}&redirect_uri={encode_redirect_uri}&scope={scope}
 
 		
-		//https://dknutrition.cafe24.com/disp/common/oauth/authorize?response_type=code&client_id=rQfkxGAOEKTaTGbA4Q2MTG&state=&redirect_uri=https://dknutri02.mycafe24.com/api/redirect.php&scope=mall.read_application,mall.write_application,mall.read_privacy,mall.read_store,mall.write_store
+		//https://dknutrition.cafe24.com/disp/common/oauth/authorize?response_type=code&client_id=rQfkxGAOEKTaTGbA4Q2MTG&state=&redirect_uri=https://dknutri02.mycafe24.com/api/redirect.php&scope=mall.read_application,mall.write_application,mall.read_privacy,mall.read_store,mall.write_store,mall.read_category,mall.read_product,mall.read_collection,mall.read_supply,mall.read_order,mall.read_promotion,mall.read_personal
 		$this->db = new DB();
 		$this->logger = new Log();
 		

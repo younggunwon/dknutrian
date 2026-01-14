@@ -50,7 +50,7 @@ if($paymentFl == 'auto' && !empty($campaignData['searchQuery'])) {
 	$savedSearchParams = json_decode($campaignData['searchQuery'], true);
 	if($savedSearchParams !== null && is_array($savedSearchParams)) {
 		// GET 파라미터가 없을 때만 저장된 검색 조건 적용 (직접 검색한 경우 우선)
-		if(empty($_GET['key']) && empty($_GET['keyword']) && empty($_GET['entryDt'])) {
+		if(empty($_GET['key']) && empty($_GET['keyword']) && empty($_GET['entryDt']) && empty($_GET['orderDt'])) {
 			$_GET = array_merge($_GET, $savedSearchParams);
 		}
 	}
@@ -549,6 +549,11 @@ table td .red_text{
 				<input type="hidden" name="entryDt[]" value="<?= htmlspecialchars($entryDt) ?>">
 			<?php endforeach; ?>
 		<?php endif; ?>
+		<?php if(!empty($_GET['orderDt']) && is_array($_GET['orderDt'])): ?>
+			<?php foreach($_GET['orderDt'] as $idx => $orderDt): ?>
+				<input type="hidden" name="orderDt[]" value="<?= htmlspecialchars($orderDt) ?>">
+			<?php endforeach; ?>
+		<?php endif; ?>
 		<?php if(!empty($_GET['groupNo']) && is_array($_GET['groupNo'])): ?>
 			<?php foreach($_GET['groupNo'] as $groupNo): ?>
 				<input type="hidden" name="groupNo[]" value="<?= htmlspecialchars($groupNo) ?>">
@@ -976,6 +981,13 @@ $(document).ready(function () {
 				searchEntryDt.push(entryDtVal);
 			}
 		});
+		var searchOrderDt = [];
+		$('#frmSearchBase input[name="orderDt[]"]').each(function(){
+			var orderDtVal = $(this).val() || '';
+			if(orderDtVal.trim() !== '') {
+				searchOrderDt.push(orderDtVal);
+			}
+		});
 		
 		// 회원등급(groupNo) 가져오기
 		var searchGroupNos = [];
@@ -996,6 +1008,12 @@ $(document).ready(function () {
 		if(searchEntryDt.length > 0 && searchEntryDt.some(function(val) { return val.trim() !== ''; })) {
 			hasSearchCondition = true;
 		}
+
+		// orderDt가 하나라도 입력되어 있으면 검색 조건 있음
+		if(searchOrderDt.length > 0 && searchOrderDt.some(function(val) { return val.trim() !== ''; })) {
+			hasSearchCondition = true;
+		}
+
 		// groupNo가 선택되어 있으면 검색 조건 있음
 		if(searchGroupNos.length > 0) {
 			hasSearchCondition = true;
@@ -1016,6 +1034,7 @@ $(document).ready(function () {
 		$('#frmCampaignRegist input[type="hidden"][name="key"]').remove();
 		$('#frmCampaignRegist input[type="hidden"][name="keyword"]').remove();
 		$('#frmCampaignRegist input[type="hidden"][name="entryDt[]"]').remove();
+		$('#frmCampaignRegist input[type="hidden"][name="orderDt[]"]').remove();
 		$('#frmCampaignRegist input[type="hidden"][name="groupNo[]"]').remove();
 		
 		// 체크박스와 input을 serialize에서 제외하기 위해 disabled 처리 (나중에 복원)
@@ -1061,6 +1080,11 @@ $(document).ready(function () {
 		$.each(searchEntryDt, function(index, value){
 			if(value) {
 				$('#frmCampaignRegist').append('<input type="hidden" name="entryDt[]" value="' + value + '">');
+			}
+		});
+		$.each(searchOrderDt, function(index, value){
+			if(value) {
+				$('#frmCampaignRegist').append('<input type="hidden" name="orderDt[]" value="' + value + '">');
 			}
 		});
 		

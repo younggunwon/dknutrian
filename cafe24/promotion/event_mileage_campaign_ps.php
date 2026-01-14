@@ -332,6 +332,16 @@ try {
 						$searchParams['entryDt'] = array_values($entryDtFiltered);
 					}
 				}
+
+				// orderDt (주문일)
+				if(isset($_POST['orderDt']) && is_array($_POST['orderDt'])) {
+					$orderDtFiltered = array_filter($_POST['orderDt'], function($value) {
+						return trim($value) !== '';
+					});
+					if(!empty($orderDtFiltered)) {
+						$searchParams['orderDt'] = array_values($orderDtFiltered);
+					}
+				}
 				
 				// groupNo (회원등급)
 				if(isset($_POST['groupNo']) && is_array($_POST['groupNo'])) {
